@@ -170,9 +170,6 @@ This is extremly powerful because you can also with security have users in Europ
 You can also imagine using aliases for time series data.
 
 ```
-# PUT /demo-alias-2030-12-25/_alias/demo-alias-2030
-
-# Even better with a composable index template
 PUT _index_template/demo-alias-2030
 {
   "index_patterns": ["demo-alias-2030-*"],
@@ -193,24 +190,14 @@ PUT _index_template/demo-alias-2030
   }
 }
 
-# Create a document for 26 Dec 2030
-POST /demo-alias-2030-12-26/_doc
-{
-  "foo": "bar",
-  "year": 2030
-}
-
-# Search for data in 2030
-GET /demo-alias-2030/_search
+# Create an index for 26 Dec 2030
+PUT /demo-alias-2030-12-26
 
 # Create an alias for the current day
 PUT /demo-alias-2030-12-26/_alias/demo-alias-current_day
 
-# Search for data in current day
-GET /demo-alias-current_day/_search
-
-# Create a document for 27 Dec 2030
-POST /demo-alias-2030-12-27/_doc
+# Create a document for the day
+POST /demo-alias-current_day/_doc
 {
   "foo": "bar",
   "year": 2030
@@ -221,6 +208,9 @@ GET /demo-alias-2030/_search
 
 # Search for data in current day
 GET /demo-alias-current_day/_search
+
+# Create an index for 27 Dec 2030
+PUT /demo-alias-2030-12-27
 
 # We obviously need to switch the alias
 POST /_aliases
@@ -231,9 +221,24 @@ POST /_aliases
   ]
 }
 
+# Create a document for the day
+POST /demo-alias-current_day/_doc
+{
+  "foo": "bar",
+  "year": 2030
+}
+
+# Search for data in 2030
+GET /demo-alias-2030/_search
+
 # Search for data in current day
 GET /demo-alias-current_day/_search
 ```
+
+A good practice to consider is to use always aliases:
+
+* a write alias (goes to one single index - `demo-alias-current_day`) 
+* read aliases (`demo-alias-2030`)
 
 ### Reindex
 
